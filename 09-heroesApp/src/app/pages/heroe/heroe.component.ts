@@ -1,3 +1,4 @@
+import { HeroeService } from './../../services/heroe.service';
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { HeroeModel } from 'src/app/models/heroe.model';
@@ -13,7 +14,7 @@ export class HeroeComponent implements OnInit {
 
 
 
-constructor(){}
+constructor( private heroeService: HeroeService){}
 
 ngOnInit() {
 
@@ -27,8 +28,13 @@ return;
 
   }
 
-console.log(form);
-console.log(this.heroe);
+
+  this.heroeService.crearHeroe(this.heroe)
+  .subscribe( resp=>{
+console.log(resp);
+
+  });
+
 }
 
 }
