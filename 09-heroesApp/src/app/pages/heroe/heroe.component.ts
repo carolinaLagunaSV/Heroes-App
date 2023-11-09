@@ -28,12 +28,28 @@ return;
 
   }
 
-
-  this.heroeService.crearHeroe(this.heroe)
+if(this.heroe.id){
+  this.heroeService.actualizarheroe(this.heroe)
   .subscribe( resp=>{
 console.log(resp);
 
+
   });
+}
+
+else{
+  this.heroeService.crearHeroe(this.heroe)
+  .subscribe( resp=>{
+console.log(resp);
+this.heroe=resp;
+
+  });
+}
+
+
+
+
+
 
 }
 

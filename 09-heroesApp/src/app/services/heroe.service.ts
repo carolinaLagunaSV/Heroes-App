@@ -26,4 +26,18 @@ return this.http.post(`${this.url}/heroes.json`, heroe)
 
 
 
+  actualizarheroe(heroe: HeroeModel){
+const heroeTemp= {
+...heroe
+};
+
+delete heroeTemp.id;
+
+return this.http.put(`${this.url}/heroes/${heroe.id}.json`, heroeTemp);
+
+
+  }
+
+
+
 }
