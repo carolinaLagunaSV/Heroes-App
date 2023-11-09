@@ -1,10 +1,11 @@
-import { HeroeService } from './../../services/heroe.service';
 import { Component, OnInit } from '@angular/core';
-import { NgForm } from '@angular/forms';
-import { Observable } from 'rxjs';
 import { HeroeModel } from 'src/app/models/heroe.model';
-import Swal from 'sweetalert2';
+import { NgForm } from '@angular/forms';
+import { HeroeService } from 'src/app/services/heroe.service';
 
+import Swal from 'sweetalert2';
+import { Observable } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-heroe',
@@ -13,66 +14,57 @@ import Swal from 'sweetalert2';
 })
 export class HeroeComponent implements OnInit {
 
-  heroe = new HeroeModel();
+  heroe:HeroeModel = new HeroeModel();
 
+  constructor(private heroeService: HeroeService,
+              private route:ActivatedRoute) { }
 
+  ngOnInit() {
 
-constructor( private heroeService: HeroeService){}
+    const id = this.route.snapshot.paramMap.get('id');
 
-ngOnInit() {
+    if (id !== 'nuevo') {
 
-}
-
-guardar(form: NgForm){
-
-  if(form.invalid){
-console.log('Formulario no valido');
-return;
+      this.heroeService.getHeroe( id )
+      .subscribe((resp:any)=>{
+        this.heroe = resp;
+        this.heroe.id;
+      });
+    }
 
   }
 
-  Swal.fire({
-    title:'Espere',
-    text: 'Guardando',
-    icon: 'info',
-    allowOutsideClick: false
-  });
-  Swal.showLoading();
+  guardar(form: NgForm) {
 
-  let peticion: Observable<any>;
+    if (form.invalid) {
+      console.log('formulario no valido');
+      return;
+    }
 
+    Swal.fire({
+      title: 'Espere',
+      text: 'guardar información',
+      icon: 'info',
+      allowOutsideClick:false
+    });
+    Swal.showLoading();
 
+    let peticion: Observable<any>;
 
+    if (this.heroe.id) {
+      peticion = this.heroeService.actualizarHeroe(this.heroe);
+    } else {
+      peticion = this.heroeService.crearHeroe(this.heroe);
+    }
 
-if(this.heroe.id){
- peticion= this.heroeService.actualizarHeroe(this.heroe)
-}
+    peticion.subscribe( resp => {
+      Swal.fire({
+        title: this.heroe.nombre,
+        text: 'Se actualizo correctamente',
+        icon: 'success'
+      });
+    });
 
-else{
- peticion= this.heroeService.crearHeroe(this.heroe)
-
-}
-
-peticion.subscribe(resp=>{
-
-Swal.fire({
-  title: this.heroe.nombre,
-  text: 'se actualizo correctamente',
-  icon: 'success'
-});
-
-});
-
-
-
-}
+  }
 
 }
-
-
-
-
-
-
-
-
