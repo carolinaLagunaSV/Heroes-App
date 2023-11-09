@@ -9,35 +9,52 @@ import {map} from 'rxjs/operators';
 })
 export class HeroeService {
 private url='https://login-app-e9e08-default-rtdb.firebaseio.com';
-  constructor(private http: HttpClient) { }
+constructor( private http: HttpClient ) { }
 
-  crearHeroe(heroe: HeroeModel){
-return this.http.post(`${this.url}/heroes.json`, heroe)
-     .pipe(
+crearHeroe ( heroe: HeroeModel){
 
-      map((resp:any)=>{
-            heroe.id=resp.name;
-            return heroe;
+  return this.http.post(`${ this.url }/heroes.json`, heroe)
+  .pipe(
+    map((resp:any) => {
+      heroe.id= resp.name;
+      return heroe;
+    })
+  );
+}
 
-      }));
+actualizarHeroe( heroe: HeroeModel){
 
-
-  }
-
-
-
-  actualizarheroe(heroe: HeroeModel){
-const heroeTemp= {
-...heroe
-};
-
-delete heroeTemp.id;
-
-return this.http.put(`${this.url}/heroes/${heroe.id}.json`, heroeTemp);
+  const { id, ...heroeTemp } = heroe;
 
 
-  }
+  return this.http.put(`${ this.url}/heroes/${heroe.id}.json`, heroeTemp);
 
+}
+
+getHeroes(){
+  return this.http.get(`${ this.url }/heroes.json`)
+  .pipe(
+    map( this.crearArreglo)
+  );
+
+}
+
+private crearArreglo(heroesObj: { [key: string]: HeroeModel } | any): HeroeModel[] {
+
+  const heroes: HeroeModel[]= [];
+
+  if (heroesObj === null ){return [];}
+
+  Object.keys (heroesObj).forEach( key =>{
+    const heroe: HeroeModel = heroesObj[key];
+    heroe.id = key;
+
+    heroes.push(heroe);
+  })
+
+
+  return heroes;
+}
 
 
 }

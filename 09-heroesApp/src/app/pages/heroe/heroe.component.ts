@@ -45,7 +45,7 @@ return;
 
 
 if(this.heroe.id){
- peticion= this.heroeService.actualizarheroe(this.heroe)
+ peticion= this.heroeService.actualizarHeroe(this.heroe)
 }
 
 else{
